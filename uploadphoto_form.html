@@ -81,62 +81,37 @@
           <!-- Page Header-->
           <header class="page-header">
             <div class="container-fluid">
-              <h2 class="no-margin-bottom"><i class="far fa-plus-square"></i>Edit Group</h2>
+              <h2 class="no-margin-bottom"><i class="far fa-check-square"></i>Make Attendance</h2>
             </div>
           </header>
           <br>
-        <div class="col-md-16">
-          <form action="" method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-              {{ form.as_p }}
-              <h4> {{ instance.user }}</h4>
+        <div class="col-md-12">
+            <h5>Choose a Photo from your gallery</h5>
+          	<form action="" method="post" enctype="multipart/form-data" >
+               {% csrf_token %}
+               {{ form.as_p }}
+   
+              <button id="regidter" type="submit" name="registerSubmit" class="btn btn-primary">Generate</button>  
 
-              <table class="table">
-                {{ groupmembers.management_form }}
-
-                {% for form in groupmembers.forms %}
-                
-
-                  {% if forloop.first %}
-                    <thead>
-                    <tr>
-                        {% for field in form.visible_fields %}
-                            <th>{{ field.label|capfirst }}</th>
-                        {% endfor %}
-                    </tr>
-                    </thead>
-                {% endif %}
-                <tr class="{% cycle row1,row2 %} formset_row">
-                  
-                    {% for field in form.visible_fields %}
-                        <td>
-                            {# Include the hidden fields in the form #}
-                            {% if forloop.first %}
-                                {% for hidden in form.hidden_fields %}
-                                    {{ hidden }}
-                                {% endfor %}
-                            {% endif %}
-                            {{ field.errors.as_ul }}
-                            {{ field }}
-                        </td>
-                    {% endfor %}
-
-                </tr>
-              {% endfor %}
-            </table>
-            <style type="text/css">.horizontal { display: inline}</style>
-              <dl>
-              <ul>
-                <li class="horizontal"> <a href="/groups/"> < < Go Back </a></li>
-
-               <li class="horizontal"><button id="regidter" type="submit" name="registerSubmit" class="btn btn-primary">Save Group</button> </li>
-              </ul>
-            </dl>
-            
-
-          </form>
+			     </form>
         </div>
-              
+      <br>
+      <div class="col-md-12" id="screenshot" >
+        <h5>Or take a picture from your device</h5>
+
+        <video class="videostream" autoplay=""></video>
+        <p><img id="screenshot-img"></p>
+        <p><button align= "left" id="capture-button" class="btn btn-primary">Capture video</button>
+        <button id="screenshot-button" class="btn btn-primary" disabled="">Take screenshot</button></p>
+      </div>
+
+               {% csrf_token %}
+      <div class="col-md-12">      
+           <button onclick="PostFunction()"  class="btn btn-primary">Generate</button>  
+      </div>
+  </body>
+
+
           <!-- Page Footer-->
           <footer class="main-footer">
             <div class="container-fluid">
@@ -163,18 +138,64 @@
     <script src="{% static 'vendor/jquery-validation/jquery.validate.min.js' %}"></script>
     <!-- Main File-->
     <script src="{% static 'js/front.js' %}"></script>
-  </body>
   
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="{% static 'path_to/jquery.formset.js' %}"></script>
 <script src="{% static 'js/jquery.formset.js' %}"></script>
 
-<script type="text/javascript">
-        $('.formset_row').formset({
-            addText: 'Add member',
-            deleteText: 'Delete',
-            prefix: 'groupmembers_set'
-        });
+
+
+
+<img src="">
+<canvas style="display:none;"></canvas>
+
+<script>
+
+const constraints = {
+  video: true
+};
+
+const captureVideoButton =
+document.querySelector('#capture-button');
+const screenshotButton = document.querySelector('#screenshot-button');
+const img = document.querySelector('#screenshot img');
+const video = document.querySelector('#screenshot video');
+const input=document.querySelector('#id_picture')
+const canvas = document.createElement('canvas');
+
+captureVideoButton.onclick = function() {
+  navigator.mediaDevices.getUserMedia(constraints).
+    then(handleSuccess).catch(handleError);
+};
+
+screenshotButton.onclick = video.onclick = function() {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  // Other browsers will fall back to image/png
+  img.src = canvas.toDataURL('image/webp');
+};
+
+function handleSuccess(stream) {
+  screenshotButton.disabled = false;
+  video.srcObject = stream;
+}
+
+function PostFunction(){
+  $.ajax({
+    type: "POST",
+    url: "/uppicture/",
+    data: {'name': canvas.toDataURL('image/webp'), 'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()}
+  }).done(function(o) {
+      window.location.href = "/attendance/";
+
+
+    // If you want the file to be visible in the browser 
+    // - please modify the callback in javascript. All you
+    // need is to return the url to the file, you just saved 
+    // and than put the image in your browser.
+  });
+};
 </script>
-  
+
 </html>

@@ -7,9 +7,10 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="robots" content="all,follow">
-    <script src="https://unpkg.com/vue"></script>
     <!-- Bootstrap CSS-->
     {% load static %}
+    {% load i18n %} 
+
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
     <!-- Font Awesome CSS-->
     <link rel="stylesheet" href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}">
@@ -21,14 +22,11 @@
     <link rel="stylesheet" href="{% static 'css/style.default.css' %}" id="theme-stylesheet">
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-    
     <!-- Favicon-->
     <link rel="shortcut icon" href="img/favicon.ico">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">    <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
-
-
   </head>
   <body>
     <div class="page">
@@ -54,7 +52,8 @@
               <!-- Navbar Menu -->
               <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
                 <!-- Search-->
-                               
+               
+                
                 <li class="nav-item"><a href="/login/" class="nav-link logout">Logout<i class="fas fa-sign-out-alt"></i></a></li>
               </ul>
             </div>
@@ -71,72 +70,81 @@
               <h1 class="h4">{{ user.get_username }}</h1>
             </div>
           </div>
-          <!-- Sidebar Navidation Menus--><span class="heading">Menu</span>
+          <!-- Sidebar Navidation Menus--><span class="heading">Menú</span>
           <ul class="list-unstyled">
-                    <li><a href="/profile/"> <i class="fas fa-user"></i>Profile</a></li>    
+                    <li ><a href="/profile/"> <i class="far fa-user"></i>Profile</a></li>
                     <li class="active"><a href="/groups/"> <i class="fas fa-users"></i>Groups</a></li>
+                                        
           </ul>
         </nav>
         <div class="content-inner">
           <!-- Page Header-->
           <header class="page-header">
             <div class="container-fluid">
-              <h2 class="no-margin-bottom"><i class="far fa-plus-square"></i>Edit Group</h2>
+              <h2 class="no-margin-bottom"><i class="fas fa-users"></i>Group Profile</h2>
             </div>
           </header>
-          <br>
-        <div class="col-md-16">
-          <form action="" method="post" enctype="multipart/form-data">
-              {% csrf_token %}
-              {{ form.as_p }}
-              <h4> {{ instance.user }}</h4>
+        
+        
+            <body >
+            <br>
+            <div class="col-sm-12 text-right">
+            <h1 align="center" >{{ query_group.0.groupid }}</h1>
+          </div>
+          <div class="col-sm-12">
+            <a href="/groups/" align="left"> < < Go Back  </a>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;    
 
-              <table class="table">
-                {{ groupmembers.management_form }}
 
-                {% for form in groupmembers.forms %}
-                
+            <a href="{% url 'upload-photo' %}" align="right"> Make Attendance> ></a>
 
-                  {% if forloop.first %}
-                    <thead>
-                    <tr>
-                        {% for field in form.visible_fields %}
-                            <th>{{ field.label|capfirst }}</th>
-                        {% endfor %}
-                    </tr>
-                    </thead>
-                {% endif %}
-                <tr class="{% cycle row1,row2 %} formset_row">
-                  
-                    {% for field in form.visible_fields %}
-                        <td>
-                            {# Include the hidden fields in the form #}
-                            {% if forloop.first %}
-                                {% for hidden in form.hidden_fields %}
-                                    {{ hidden }}
-                                {% endfor %}
-                            {% endif %}
-                            {{ field.errors.as_ul }}
-                            {{ field }}
-                        </td>
-                    {% endfor %}
 
-                </tr>
-              {% endfor %}
-            </table>
-            <style type="text/css">.horizontal { display: inline}</style>
-              <dl>
-              <ul>
-                <li class="horizontal"> <a href="/groups/"> < < Go Back </a></li>
-
-               <li class="horizontal"><button id="regidter" type="submit" name="registerSubmit" class="btn btn-primary">Save Group</button> </li>
-              </ul>
-            </dl>
+          </div>
             
+            </body>
 
-          </form>
-        </div>
-              
+             <table class="table" width="100%" border="0" cellpadding="0" cellspacing="0">
+          <thead>
+      
+            <tr>
+              <th align="center"><STRONG>Member Name</STRONG></th>
+              <th align="center"><STRONG>E-mail</STRONG></th>
+              <th align="center"><STRONG>Picture 1 </STRONG></th>
+              <th align="center"><STRONG>Picture 2 </STRONG></th>
+              <th>{% trans "Delete" %}</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            {% for GroupMembers in query_group %}
+              <tr>
+
+                <tr>
+                <td>{{ GroupMembers.nombreint }}</td>
+                <td>{{ GroupMembers.correoint }}</td>
+                <td><img src="{{ GroupMembers.foto1.url }}" width="200" height="200" >
+                </td>
+                <td><img src="{{ GroupMembers.foto2.url }}" width="200" height="200" ></td>
+                <td><a href="{% url 'delete_view' part_id=GroupMembers.id %}" ><i class="fa fa-trash"></i></a></td>
+
+              </tr>
+
+            {% endfor %}
+                 
+      
+           </tbody>
+          </table>
+          <div class="col-sm-12" align="center">
+            <a href="/history/" align="center"> Group register  </a>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;     
+
+
+            <a href="/editgroup/" align="center"> Edit Group</a>
+
+
+          </div>
+            
+          
           <!-- Page Footer-->
           <footer class="main-footer">
             <div class="container-fluid">
@@ -164,17 +172,4 @@
     <!-- Main File-->
     <script src="{% static 'js/front.js' %}"></script>
   </body>
-  
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="{% static 'path_to/jquery.formset.js' %}"></script>
-<script src="{% static 'js/jquery.formset.js' %}"></script>
-
-<script type="text/javascript">
-        $('.formset_row').formset({
-            addText: 'Add member',
-            deleteText: 'Delete',
-            prefix: 'groupmembers_set'
-        });
-</script>
-  
 </html>

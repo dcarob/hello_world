@@ -21,12 +21,14 @@ urlpatterns= [
     url(r'^$', login, {'template_name': 'pfapp/login.html'}, name='login'),
     url(r'^edit/password/$',views.change_password,name='changepassword'),
     url(r'^prueba/$',views.codificacion ,name='photo'),
+    url(r'^newCod/$',views.codificacionEdit ,name='editCod'),
+
     url(r'^(?P<group_grupo>[0-9]+)/$',views.GroupList, name='detail'),
     url(r'^upload/$', views.GroupPhotoEntry.as_view(), name='upload-photo'),
     url(r'^uppicture/$', views.pictureUpload, name='picture-upload'),
     url(r'^attendance/$',views.attendanceGenerator ,name='attendance'),
     url(r'^editgroup/$',views.editGroup.as_view(),name='editgroup'),
-
+    url(r'^delete/(?P<part_id>.*)/$', views.Delete, name='delete_view'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
